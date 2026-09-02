@@ -55,6 +55,8 @@ Final Answer + Retrieved Sources
 
 ```
 
+---
+
 ## Technologies Used
 
 - React
