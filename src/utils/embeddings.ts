@@ -5,8 +5,6 @@ import {
 } from "@xenova/transformers";
 
 // Use the online Hugging Face model.
-// Disable browser caching because a cached HTML/error page
-// can cause: Unexpected token '<' ... is not valid JSON
 env.allowLocalModels = false;
 env.allowRemoteModels = true;
 env.useBrowserCache = false;
@@ -41,10 +39,29 @@ export async function generateEmbedding(
 export async function generateEmbeddings(
   texts: string[]
 ): Promise<number[][]> {
+  if (texts.length === 0) {
+    return [];
+  }
+
+  const model = await getExtractor();
+
+  // Generate embeddings for all chunks in one call.
+  const output = await model(texts, {
+    pooling: "mean",
+    normalize: true,
+  });
+
+  const data = output.data as Float32Array;
+
+  // all-MiniLM-L6-v2 produces 384-dimensional embeddings.
+  const dimensions = 384;
   const embeddings: number[][] = [];
 
-  for (const text of texts) {
-    embeddings.push(await generateEmbedding(text));
+  for (let i = 0; i < texts.length; i++) {
+    const start = i * dimensions;
+    embeddings.push(
+      Array.from(data.slice(start, start + dimensions))
+    );
   }
 
   return embeddings;

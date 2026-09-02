@@ -142,8 +142,6 @@ function App() {
         </p>
       )}
 
-      {error && <p className="error">{error}</p>}
-
       {text && !loading && (
         <section className="result">
           <h2>Document Processed</h2>
@@ -174,6 +172,13 @@ function App() {
           >
             {asking ? "Searching..." : "Ask DocuMind"}
           </button>
+          
+          {error && (
+            <p className="error">
+              <strong>{error}</strong>
+              </p>
+              )}
+
         </section>
       )}
 

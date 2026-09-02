@@ -29,12 +29,27 @@ export function similaritySearch<T>(
   queryEmbedding: number[],
   items: T[],
   embeddings: number[][],
-  topK = 3
+  topK = 3,
+  minScore = 0.25
 ): SearchResult<T>[] {
-  const results = items.map((item, index) => ({
-    item,
-    score: cosineSimilarity(queryEmbedding, embeddings[index]),
-  }));
+  const results: SearchResult<T>[] = [];
+
+  for (let i = 0; i < items.length; i++) {
+    const embedding = embeddings[i];
+
+    if (!embedding || embedding.length !== queryEmbedding.length) {
+      continue;
+    }
+
+    const score = cosineSimilarity(queryEmbedding, embedding);
+
+    if (score >= minScore) {
+      results.push({
+        item: items[i],
+        score,
+      });
+    }
+  }
 
   return results
     .sort((a, b) => b.score - a.score)
