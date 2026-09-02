@@ -53,7 +53,7 @@ Groq LLM
        ↓
 Final Answer + Retrieved Sources
 
-```text
+```
 
 ## Technologies Used
 
