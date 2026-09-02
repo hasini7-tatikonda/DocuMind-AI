@@ -1,9 +1,7 @@
 import * as pdfjsLib from "pdfjs-dist";
+import workerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.mjs",
-  import.meta.url
-).toString();
+pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
 
 export async function extractTextFromPDF(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
@@ -29,7 +27,10 @@ export async function extractTextFromPDF(file: File): Promise<string> {
 }
 
 export async function extractTextFromFile(file: File): Promise<string> {
-  if (file.type === "text/plain" || file.name.toLowerCase().endsWith(".txt")) {
+  if (
+    file.type === "text/plain" ||
+    file.name.toLowerCase().endsWith(".txt")
+  ) {
     return await file.text();
   }
 

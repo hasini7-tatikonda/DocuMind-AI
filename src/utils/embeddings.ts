@@ -1,8 +1,20 @@
-import { pipeline, type FeatureExtractionPipeline } from "@xenova/transformers";
+import {
+  pipeline,
+  env,
+  type FeatureExtractionPipeline,
+} from "@xenova/transformers";
+
+// Use the online Hugging Face model.
+// Disable browser caching because a cached HTML/error page
+// can cause: Unexpected token '<' ... is not valid JSON
+env.allowLocalModels = false;
+env.allowRemoteModels = true;
+env.useBrowserCache = false;
+env.useFSCache = false;
 
 let extractor: FeatureExtractionPipeline | null = null;
 
-export async function generateEmbedding(text: string): Promise<number[]> {
+async function getExtractor() {
   if (!extractor) {
     extractor = await pipeline(
       "feature-extraction",
@@ -10,7 +22,15 @@ export async function generateEmbedding(text: string): Promise<number[]> {
     );
   }
 
-  const output = await extractor(text, {
+  return extractor;
+}
+
+export async function generateEmbedding(
+  text: string
+): Promise<number[]> {
+  const model = await getExtractor();
+
+  const output = await model(text, {
     pooling: "mean",
     normalize: true,
   });
@@ -24,8 +44,7 @@ export async function generateEmbeddings(
   const embeddings: number[][] = [];
 
   for (const text of texts) {
-    const embedding = await generateEmbedding(text);
-    embeddings.push(embedding);
+    embeddings.push(await generateEmbedding(text));
   }
 
   return embeddings;
