@@ -1,75 +1,54 @@
-# React + TypeScript + Vite
+# DocuMind AI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### Intermediate Level – Document-Based RAG Assistant
 
-Currently, two official plugins are available:
+DocuMind AI is a document-based question-answering assistant that allows users to upload PDF or TXT documents and ask questions based on their content.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+The application uses Retrieval-Augmented Generation (RAG) to extract document content, split it into smaller chunks, generate embeddings, retrieve the most relevant sections, and use the retrieved context to generate grounded answers through the Groq API.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
 
-## Expanding the ESLint configuration
+- Upload PDF and TXT documents
+- Extract text from uploaded documents
+- Split documents into smaller chunks
+- Generate embeddings for document chunks
+- Perform similarity-based vector search
+- Retrieve relevant document context
+- Generate grounded answers using the Groq API
+- Display retrieved sources and similarity scores
+- Handle empty questions with validation
+- Respond appropriately when information is not available in the document
+- Clean and responsive user interface
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## RAG Workflow
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+The application follows this workflow:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
-
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+```text
+Upload PDF / TXT
+       ↓
+Document Text Extraction
+       ↓
+Text Chunking
+       ↓
+Embedding Generation
+       ↓
+Store Chunk Embeddings
+       ↓
+User Question
+       ↓
+Question Embedding
+       ↓
+Cosine Similarity Search
+       ↓
+Retrieve Top Relevant Chunks
+       ↓
+Build Grounded Prompt
+       ↓
+Groq LLM
+       ↓
+Final Answer + Retrieved Sources
